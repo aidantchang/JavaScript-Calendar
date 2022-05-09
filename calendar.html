@@ -1,0 +1,153 @@
+<!-- Author: Aidan Chang    HTML file the utilizes HTML, CSS, and JavaScript to provide a functional calendar for any month in time -->
+<!-- Assignment: https://docs.google.com/presentation/d/104c0G32Ba35ICtGW-g2dKiYN1qVEo3m3gGnx4EjffXU/edit#slide=id.g263bde6f43_0_0 -->
+
+<html>
+  <head></head>
+  <body>
+    <h2>My Calendar</h2>
+    <div id="month">
+    </div>
+  </body>
+
+<style>
+    /* flex wrap center thing */
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    select {
+          margin-left: 10px;
+          margin-right: 10px;
+    }
+    /* day of week headers */
+    #month > #title{
+        background-color: white;
+        border: none;
+        font-weight: bold;
+        height:50px;
+    }
+    /* calendar grid */
+    #month {
+        display: grid;
+        grid-template-columns: 70px 70px 70px 70px 70px 70px 70px;
+    }
+    /* day styles */
+    #month > div {
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 70px;
+        border: 2px solid black;
+        background-color:#76f7dd;
+    }
+    /* change color on hover */
+    #month > div:hover{
+        background-color: #32f137;
+    }
+    /* blank squares before and after */
+    #month > #blank {
+        background-color: white;
+        border: none;
+    }
+
+</style>      
+
+<script>
+      //adds select dropdowns to html body
+      var dropdowns = document.createElement("div");
+      dropdowns.id = "dropdowns"
+      document.body.insertBefore(dropdowns, document.body.childNodes[2]);
+      var monthDrop = document.createElement("select");
+      monthDrop.id = "calendar";
+      dropdowns.appendChild(monthDrop);
+      var yearDrop = document.createElement("select");
+      yearDrop.id = "year";
+      dropdowns.appendChild(yearDrop);
+
+      //array things
+      var days = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+      //dropdown options
+      for(i = 0; i < 12; i++){
+        var list = document.getElementById("calendar");
+        var opt = document.createElement("OPTION");
+        opt.value = i;
+        var month = document.createTextNode(months[i])
+        opt.appendChild(month);
+        list.add(opt);
+      }
+      for(i = 1900; i <= 2018; i++){
+        var list = document.getElementById("year");
+        var opt = document.createElement("OPTION");
+        opt.id = i;
+        var year = document.createTextNode(i);
+        opt.appendChild(year);
+        list.add(opt);
+      }
+    
+      //day of week headers
+      for(i = 0; i < 7; i++){
+        var title = document.createTextNode(days[i]);
+        var day = document.createElement("DIV");
+        day.id = "title";
+        day.appendChild(title);
+        document.getElementById("month").appendChild(day);
+      }
+      
+      //current month display October 2018
+      document.getElementById("calendar").selectedIndex = "9";
+      document.getElementById("year").selectedIndex = "118";
+
+      function makeCalendar() {
+        var selectedMonth = document.getElementById("calendar").options[document.getElementById("calendar").selectedIndex].value;
+        var selectedYear = document.getElementById("year").options[document.getElementById("year").selectedIndex].value;
+        var firstDay = new Date(selectedYear, selectedMonth, 1);
+        var dayIndex = firstDay.getDay();
+        var lastDay = new Date(selectedYear, firstDay.getMonth()+1, 0);
+        var dayNumber = lastDay.getDate();
+        console.log(dayNumber);      
+        //divs up until first day have blank id, first day starts on correct day of week index
+        for(i = 0; i < dayIndex; i++){
+          var day = document.createElement("DIV");
+          day.id = "blank";
+          document.getElementById("month").appendChild(day);
+        }
+        //adds day divs
+        for(i = 1; i <= dayNumber; i++){
+          var day = document.createElement("DIV");
+          var number = document.createTextNode(i);
+          day.id = i;
+          day.appendChild(number);
+          document.getElementById("month").appendChild(day);
+          day.onclick = function(){
+            removeStyle(dayNumber);
+            this.style.backgroundColor = "#38a222";
+          };
+        }
+      }
+      //clears color from previously clicked boxees
+      function removeStyle(dayNumber){
+        for(i = 1; i <= dayNumber; i++){
+          document.getElementById(i).removeAttribute("style");
+        }
+      }
+      makeCalendar();
+      
+      //makes sure there aren't extra days at end
+      document.getElementById("calendar").onclick = function(){
+        while(document.getElementById("month").childNodes[8]){
+          document.getElementById("month").removeChild(document.getElementById("month").childNodes[8]);
+        }
+        makeCalendar();
+      }
+      document.getElementById("year").onclick = function(){
+        while(document.getElementById("month").childNodes[8]){
+          document.getElementById("month").removeChild(document.getElementById("month").childNodes[8]);
+        }
+        makeCalendar();
+      }
+</script>
+</html>
